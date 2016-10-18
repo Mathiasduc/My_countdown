@@ -1,6 +1,6 @@
 (function(){
    window.app = {
-      defaultTime: 300000, 
+      defaultTime: 300000, // En quelle unité ? Ca représente quoi ?
       timer: null,
       intervalID: null,
       isRunning: false,
@@ -26,7 +26,7 @@
             console.timeEnd('app.intervalID');
             setTimeout(function(){ alert("Dring! Time'sup!"); },1);
             app.stop();
-            app.sax();
+            app.sax();// sax ? C'est pour faire quoi ? Nom non-explicite
          }
          if(app.timer <= 30000){
             app.flashLight();
@@ -81,7 +81,7 @@
       },
 
       progressStatus: function(){
-         var status = (app.timer / app.defaultTime);
+         var status = (app.timer / app.defaultTime); 
          return (status);
       },
 
@@ -106,5 +106,5 @@
       }
    }
 };
-app.init();
+app.init();// Mauvaise INDENTATION
 })()
