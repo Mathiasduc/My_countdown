@@ -1,6 +1,6 @@
 (function(){
    window.app = {
-      defaultTime: 300000, 
+      defaultTime: 300000, //time in ms (5min)
       timer: null,
       intervalID: null,
       isRunning: false,
@@ -26,7 +26,7 @@
             console.timeEnd('app.intervalID');
             setTimeout(function(){ alert("Dring! Time'sup!"); },1);
             app.stop();
-            app.sax();
+            app.saxVidToggle(true);
          }
          if(app.timer <= 30000){
             app.flashLight();
@@ -34,7 +34,7 @@
       },
 
       updateView:function(){
-         app.sax("clean"); 
+         app.saxVidToggle(false); 
          var minute = parseInt((app.timer / 1000) / 60);
          var second = parseInt((app.timer / 1000) % 60);
          minute = minute < 10 ? "0" + minute : minute;
@@ -90,21 +90,22 @@
          if(displayedSecond % 2){
             $("body").css( {"background-color": "#DE6449"});
          }
-         else
-           $("body").css({"background-color": "white"});
-     },
+         else{
+            $("body").css({"background-color": "white"});
+         }
+      },
 
-     sax: function(clean){
-      if(clean === "clean"){
-         $("#sax").remove();
+      saxVidToggle: function(bool){
+         if(!bool){
+            $("#sax").remove();
+         }
+         else{
+            setTimeout(function(){ 
+               var sax = '<iframe id="sax" width="560" height="315" src="https://www.youtube.com/embed/CoaeDyv0Cmo?autoplay=1"  frameborder="0" allowfullscreen></iframe>'
+               $(".sax").prepend(sax);
+            },5000);
+         }
       }
-      else{
-         setTimeout(function(){ 
-            var sax = '<iframe id="sax" width="560" height="315" src="https://www.youtube.com/embed/CoaeDyv0Cmo" autoplay="0" frameborder="0" allowfullscreen></iframe>'
-            $(".sax").prepend(sax);
-         },5000);
-      }
-   }
-};
-app.init();
+   };
+   app.init();
 })()
