@@ -1,10 +1,11 @@
 (function(){
    window.app = {
-      defaultTime: 5 * 60, //time in seconds
+      defaultTime: 300000, 
       timer: null,
       intervalID: null,
       isRunning: false,
       startTime: null,
+      timePast: 0,
 
       init:function(){
          app.listeners();
@@ -18,37 +19,38 @@
       },
 
       decrement:function(){
-         console.log(app.timer);
-         app.timer--;
-         console.log(app.defaultTime - app.timer);
-         var test = app.startTime - Date.now();
-         console.log(test); 
+         app.timePast = (app.startTime - Date.now());
+         app.timer = app.defaultTime + app.timePast; 
          if(app.timer <= 0){
-            alert("Dring! Time'sup!");
+            app.updateView();
             console.timeEnd('app.intervalID');
-            setTimeout(function(){ alert("Dring! Time'sup!"); },1000);
+            setTimeout(function(){ alert("Dring! Time'sup!"); },1);
             app.stop();
+         }
+         if(app.timer <= 30000){
+            app.flashLight();
          }
          app.updateView();
       },
 
       updateView:function(){
-         var minute = parseInt(app.timer / 60);
-         var second = parseInt(app.timer % 60);
+         var minute = parseInt((app.timer / 1000) / 60);
+         var second = parseInt((app.timer / 1000) % 60);
          minute = minute < 10 ? "0" + minute : minute;
          second = second < 10 ? "0" + second : second;
          $("#progress_bar").val(app.progressStatus());
-         $("#minute_button").html(minute);
-         $("#second_button").html(second);
+         $("#minute_display").html(minute);
+         $("#second_display").html(second);
       },
 
       start:function(){
-         app.timer = app.timer === null ? app.defaultTime : app.timer;
-         console.time('app.intervalID');
-         app.startTime = Date.now();
-         console.log(app.startTime);
-         app.intervalID = setInterval(app.decrement,1000);
-         app.isRunning = true;
+         if (!app.isRunning){
+            app.timer = app.timer === null ? app.defaultTime : app.timer;
+            console.time('app.intervalID');
+            app.startTime = Date.now();
+            app.intervalID = setInterval(app.decrement,100);
+            app.isRunning = true;
+         }
       },
 
       stop:function(){
@@ -63,6 +65,7 @@
       },
 
       getInput:function(){
+         app.stop();
          var minute = parseInt($("#input_min").val(),10);
          var second = parseInt($("#input_sec").val(),10);
          if(isNaN(minute)){
@@ -71,7 +74,7 @@
          if(isNaN(second)){
             second = 0;
          }
-         app.defaultTime = (minute * 60) + (second);
+         app.defaultTime = (minute * 1000) * 60 + (second * 1000);
          app.timer = app.defaultTime;
          app.updateView();
       },
@@ -79,6 +82,15 @@
       progressStatus: function(){
          var status = (app.timer / app.defaultTime);
          return (status);
+      },
+
+      flashLight: function(){
+         var displayedSecond = $("#second_display").html();
+         if(displayedSecond % 2){
+            $("body").css( {"background-color": "#DE6449"});
+         }
+         else
+             $("body").css({"background-color": "white"});
       }
    };
    app.init();
