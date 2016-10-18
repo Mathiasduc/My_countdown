@@ -21,19 +21,20 @@
       decrement:function(){
          app.timePast = (app.startTime - Date.now());
          app.timer = app.defaultTime + app.timePast; 
+         app.updateView();
          if(app.timer <= 0){
-            app.updateView();
             console.timeEnd('app.intervalID');
             setTimeout(function(){ alert("Dring! Time'sup!"); },1);
             app.stop();
+            app.sax();
          }
          if(app.timer <= 30000){
             app.flashLight();
          }
-         app.updateView();
       },
 
       updateView:function(){
+         app.sax("clean"); 
          var minute = parseInt((app.timer / 1000) / 60);
          var second = parseInt((app.timer / 1000) % 60);
          minute = minute < 10 ? "0" + minute : minute;
@@ -90,8 +91,20 @@
             $("body").css( {"background-color": "#DE6449"});
          }
          else
-             $("body").css({"background-color": "white"});
+           $("body").css({"background-color": "white"});
+     },
+
+     sax: function(clean){
+      if(clean === "clean"){
+         $("#sax").remove();
       }
-   };
-   app.init();
+      else{
+         setTimeout(function(){ 
+            var sax = '<iframe id="sax" width="560" height="315" src="https://www.youtube.com/embed/CoaeDyv0Cmo" autoplay="0" frameborder="0" allowfullscreen></iframe>'
+            $(".sax").prepend(sax);
+         },100);
+      }
+   }
+};
+app.init();
 })()
